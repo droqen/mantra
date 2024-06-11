@@ -1,0 +1,39 @@
+This is a txt file regarding the design of the MySQL tables. Keep it brief.
+
+- posts
+Anything posted by a user for inclusion on pages. For now a post may be one of Text, Music, or Game. I'll need different subtypes as well for versions and technology, how do I name those differently... "versions"?
+	id
+	author_userid
+	playengineid // what engine and version will be used to play the post? we can also infer a simpler 'post type' from this id
+	content // hmm, not sure if big text or not. let's go with a limited varchar of 256. ah, but to include nonenglish characters or go pure unicode or whatever...
+	published (datetime) // specific timestamp when a post is posted
+
+- playengines
+	id
+	label // an internal label
+	shortlabel // a user-end label for describing what 'type' this is, e.g. is it games, music, etc
+
+- users
+	id
+	username
+	unsecure_pass // i will generate a password for you because i don't want to deal with security at the moment thanks
+
+- pages
+Possibly a user can make multiple pages? A page contains posts, but also activity, i.e. whether a user has played the game today, and how many users have played the game over how many days.
+	id
+	owner_userid
+
+- post_on_page
+	pageid
+	postid
+
+- post_played
+Every post has both a played and an unplayed state. Text: you must write it over again by hand. Music: you play it start to finish without interrupting. Game: you play it and beat it of course. Visual art: IDK actually. Maybe no visual art? Video: same as music, but probably no video
+An entry in post_played indicates that post "postid" has been played by user "userid" on the date indicated. That's it, no additional data necessary
+	postid
+	userid
+	date
+
+* in the long run it might be useful or necessary to create another table 'post_streak' or something -- in order to make looking up historical data of a post's playedness less expensive. For now it is fine.
+
+.// using this set of tables, i can log in as a user. make a post that is mine, and assign to it a playengine. i can put that post on a page. i can mark the post as 'played today', and come back and play it the next day.
